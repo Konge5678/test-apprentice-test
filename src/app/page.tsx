@@ -20,8 +20,21 @@ export default async function Home() {
 
           <div className="flex gap-2">
             <Button asChild variant="default">
-              <Link href="/favorites">Gå til favoritter</Link>
+              <Link href="/favoritter">Gå til favoritter</Link>
             </Button>
+            <Button asChild variant="default">
+              <Link href="/admin">Adminpanel</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/arrangor/arrangementer">Arrangementer</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/arrangor/arrangementer/ny">Nytt arrangement</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/arrangor/arrangementer/rediger">Rediger arrangement</Link>
+            </Button>
+           
 
             <form action={logout}>
               <Button type="submit" variant="secondary">
@@ -38,6 +51,21 @@ export default async function Home() {
           <Button asChild variant="secondary">
             <Link href="/signup">Opprett konto</Link>
           </Button>
+          <Button asChild variant="default">
+              <Link href="/favoritter">Gå til favoritter</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/admin">Adminpanel</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/arrangor/arrangementer">Arrangementer</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/arrangor/arrangementer/ny">Nytt arrangement</Link>
+            </Button>
+            <Button asChild variant="default">
+              <Link href="/arrangor/arrangementer/rediger">Rediger arrangement</Link>
+            </Button>
         </div>
       )}
     </div>

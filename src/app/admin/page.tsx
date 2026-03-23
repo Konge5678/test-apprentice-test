@@ -33,7 +33,7 @@ export default function AdminHome() {
         </CardHeader>
         <CardContent>
           <Button asChild>
-            <Link href="/admin/users">Åpne brukeroversikt</Link>
+            <Link href="/admin/brukere">Åpne brukeroversikt</Link>
           </Button>
         </CardContent>
       </Card>

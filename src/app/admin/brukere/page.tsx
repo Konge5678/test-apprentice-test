@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { updateUserRole } from "@/app/admin/users/actions";
+import { updateUserRole } from "@/app/admin/brukere/actions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -66,7 +66,7 @@ export default async function AdminUsersPage() {
 
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button asChild variant="outline" className="w-full sm:w-auto">
-            <Link href="/admin">Admin</Link>
+            <Link href="/admin">Adminpanel</Link>
           </Button>
           <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link href="/">Forside</Link>
