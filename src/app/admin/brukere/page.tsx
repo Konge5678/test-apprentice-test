@@ -51,7 +51,7 @@ export default async function AdminUsersPage() {
 
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, full_name, role")
+    .select("id, full_name, email, role")
     .order("full_name", { ascending: true });
 
   return (
@@ -89,6 +89,9 @@ export default async function AdminUsersPage() {
                     Navn
                   </th>
                   <th scope="col" className="px-4 py-3 text-left font-medium">
+                    E-post
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">
                     Nåværende rolle
                   </th>
                   <th scope="col" className="px-4 py-3 text-left font-medium">
@@ -106,6 +109,8 @@ export default async function AdminUsersPage() {
                         {maskId(p.id)}
                       </div>
                     </td>
+
+                    <td className="px-4 py-3 align-top">{p.email}</td>
 
                     <td className="px-4 py-3 align-top">{roleBadge(p.role)}</td>
 
