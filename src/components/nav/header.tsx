@@ -10,7 +10,7 @@ export async function Header() {
 
   return (
     <header className="border-b">
-      <div className="mx-auto w-full max-w-6xl px-4 py-3 md:px-6">
+      <div className="mx-auto w-full max-w-6xl p-4 md:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link href="/" className="text-base font-semibold sm:text-lg">
             Arrangementer Innlandet

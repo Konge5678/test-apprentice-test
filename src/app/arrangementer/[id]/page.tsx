@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FavoriteButton } from "@/components/events/favorite-button";
 import { Header } from "@/components/nav/header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,9 @@ export default async function ArrangementDetaljPage({
 }) {
 	const { id } = await params;
 	const supabase = await createClient();
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
 	const { data: event, error } = await supabase
 		.from("events")
 		.select("id, title, description, date, location, category, image_url")
@@ -22,6 +26,17 @@ export default async function ArrangementDetaljPage({
 
 	if (error || !event) {
 		notFound();
+	}
+
+	let isFavorited = false;
+	if (user) {
+		const { data: favorite } = await supabase
+			.from("favorites")
+			.select("event_id")
+			.eq("user_id", user.id)
+			.eq("event_id", event.id)
+			.maybeSingle();
+		isFavorited = Boolean(favorite);
 	}
 
 	return (
@@ -46,9 +61,16 @@ export default async function ArrangementDetaljPage({
 					<CardContent className="space-y-4 pt-4">
 						<div className="flex flex-wrap items-start justify-between gap-2">
 							<h1 className="text-2xl font-semibold">{event.title}</h1>
-							{event.category ? (
-								<Badge variant="outline">{event.category}</Badge>
-							) : null}
+							<div className="flex items-center gap-1">
+								{event.category ? (
+									<Badge variant="outline">{event.category}</Badge>
+								) : null}
+								<FavoriteButton
+									eventId={event.id}
+									isFavorited={isFavorited}
+									isLoggedIn={Boolean(user)}
+								/>
+							</div>
 						</div>
 
 						<div className="space-y-1 text-sm text-muted-foreground">
