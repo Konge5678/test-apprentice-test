@@ -3,6 +3,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+const BUCKET = "event-images";
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
+
 export type EventFormState = {
 	error: string | null;
 };
@@ -10,6 +13,52 @@ export type EventFormState = {
 function toOptionalString(value: FormDataEntryValue | null) {
 	const s = String(value ?? "").trim();
 	return s.length ? s : null;
+}
+
+function safeFileExt(filename: string | null) {
+	const name = String(filename ?? "");
+	const parts = name.split(".");
+	if (parts.length < 2) return "jpg";
+	const ext = parts.at(-1)?.toLowerCase() ?? "jpg";
+	if (ext === "png" || ext === "jpg" || ext === "jpeg" || ext === "webp")
+		return ext;
+	return "jpg";
+}
+
+async function uploadEventImage(params: {
+	supabase: Awaited<ReturnType<typeof createClient>>;
+	eventId: string;
+	file: File;
+}) {
+	const { supabase, eventId, file } = params;
+
+	if (!file.type.startsWith("image/")) {
+		return { error: "Filen må være et bilde." as const, url: null };
+	}
+	if (file.size > MAX_IMAGE_BYTES) {
+		return { error: "Bildet er for stort (maks 5MB)." as const, url: null };
+	}
+
+	const ext = safeFileExt(file.name);
+	const objectPath = `events/${eventId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+	const bytes = new Uint8Array(await file.arrayBuffer());
+
+	const { error: uploadError } = await supabase.storage
+		.from(BUCKET)
+		.upload(objectPath, bytes, {
+			contentType: file.type,
+			upsert: false,
+		});
+
+	if (uploadError) {
+		return {
+			error: "Kunne ikke laste opp bilde. Prøv igjen.",
+			url: null as string | null,
+		};
+	}
+
+	const { data } = supabase.storage.from(BUCKET).getPublicUrl(objectPath);
+	return { error: null as string | null, url: data.publicUrl };
 }
 
 export async function createEventAction(
@@ -38,18 +87,44 @@ export async function createEventAction(
 		return { error: "Ugyldig dato/klokkeslett. Prøv igjen." };
 	}
 
-	const { error } = await supabase.from("events").insert({
-		title,
-		date: date.toISOString(),
-		location: toOptionalString(formData.get("location")),
-		category: toOptionalString(formData.get("category")),
-		description: toOptionalString(formData.get("description")),
-		image_url: toOptionalString(formData.get("image_url")),
-		organizer_id: user.id,
-	});
+	const initialImageUrl = toOptionalString(formData.get("image_url"));
+	const { data: inserted, error } = await supabase
+		.from("events")
+		.insert({
+			title,
+			date: date.toISOString(),
+			location: toOptionalString(formData.get("location")),
+			category: toOptionalString(formData.get("category")),
+			description: toOptionalString(formData.get("description")),
+			image_url: initialImageUrl,
+			organizer_id: user.id,
+		})
+		.select("id")
+		.single();
 
-	if (error) {
+	if (error || !inserted?.id) {
 		return { error: "Kunne ikke opprette arrangement. Prøv igjen." };
+	}
+
+	const file = formData.get("image");
+	if (file instanceof File && file.size > 0) {
+		const uploaded = await uploadEventImage({
+			supabase,
+			eventId: inserted.id,
+			file,
+		});
+		if (uploaded.error) return { error: uploaded.error };
+
+		const { error: updateError } = await supabase
+			.from("events")
+			.update({ image_url: uploaded.url })
+			.eq("id", inserted.id);
+
+		if (updateError) {
+			return {
+				error: "Bildet ble lastet opp, men kunne ikke lagres på arrangementet.",
+			};
+		}
 	}
 
 	redirect("/arrangor/arrangementer");
@@ -86,6 +161,14 @@ export async function updateEventAction(
 		return { error: "Ugyldig dato/klokkeslett. Prøv igjen." };
 	}
 
+	let imageUrl = toOptionalString(formData.get("image_url"));
+	const file = formData.get("image");
+	if (file instanceof File && file.size > 0) {
+		const uploaded = await uploadEventImage({ supabase, eventId, file });
+		if (uploaded.error) return { error: uploaded.error };
+		imageUrl = uploaded.url;
+	}
+
 	const { error } = await supabase
 		.from("events")
 		.update({
@@ -94,7 +177,7 @@ export async function updateEventAction(
 			location: toOptionalString(formData.get("location")),
 			category: toOptionalString(formData.get("category")),
 			description: toOptionalString(formData.get("description")),
-			image_url: toOptionalString(formData.get("image_url")),
+			image_url: imageUrl,
 		})
 		.eq("id", eventId);
 

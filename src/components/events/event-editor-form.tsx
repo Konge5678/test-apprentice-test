@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ import {
 	updateEventAction,
 } from "@/app/arrangor/arrangementer/actions";
 import { TimeSelect } from "./time-select";
+import { cn } from "@/lib/utils";
 import {
 	Dialog,
 	DialogContent,
@@ -47,6 +48,10 @@ export function EventEditorForm({
 	const [timeValue, setTimeValue] = useState(defaultValues.time || "12:00");
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deleteText, setDeleteText] = useState("");
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [imageMode, setImageMode] = useState<"upload" | "url">(
+		defaultValues.image_url ? "url" : "upload",
+	);
 	const canDelete = useMemo(
 		() => deleteText.trim().toLowerCase() === "slett",
 		[deleteText],
@@ -65,6 +70,14 @@ export function EventEditorForm({
 	useEffect(() => {
 		setValue("time", timeValue, { shouldValidate: true });
 	}, [setValue, timeValue]);
+
+	useEffect(() => {
+		if (imageMode === "upload") {
+			setValue("image_url", "", { shouldValidate: true });
+		} else {
+			if (fileInputRef.current) fileInputRef.current.value = "";
+		}
+	}, [imageMode, setValue]);
 
 	async function onValid(values: EventFormValues) {
 		setSubmitError(null);
@@ -85,7 +98,13 @@ export function EventEditorForm({
 			if (values.location) formData.set("location", values.location);
 			if (values.category) formData.set("category", values.category);
 			if (values.description) formData.set("description", values.description);
-			if (values.image_url) formData.set("image_url", values.image_url);
+			if (imageMode === "url" && values.image_url) {
+				formData.set("image_url", values.image_url);
+			}
+			const file = fileInputRef.current?.files?.item(0) ?? null;
+			if (imageMode === "upload" && file) {
+				formData.set("image", file);
+			}
 
 			const result =
 				mode === "create"
@@ -128,7 +147,7 @@ export function EventEditorForm({
 				<CardHeader>
 					<CardTitle>Detaljer</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="ring-0 ">
 					<form onSubmit={handleSubmit(onValid)} className="space-y-5">
 						<div className="space-y-2">
 							<Label htmlFor="title">Tittel</Label>
@@ -211,18 +230,67 @@ export function EventEditorForm({
 						</div>
 
 						<div className="space-y-2">
+							<Label htmlFor="image">Bilde</Label>
+							<div className="flex flex-wrap gap-2">
+								<button
+									type="button"
+									onClick={() => setImageMode("upload")}
+									className={cn(
+										"rounded-md border px-3 py-1 text-sm",
+										imageMode === "upload"
+											? "border-foreground/20 bg-muted"
+											: "text-muted-foreground hover:text-foreground",
+									)}
+								>
+									Opplasting
+								</button>
+								<button
+									type="button"
+									onClick={() => setImageMode("url")}
+									className={cn(
+										"rounded-md border px-3 py-1 text-sm",
+										imageMode === "url"
+											? "border-foreground/20 bg-muted"
+											: "text-muted-foreground hover:text-foreground",
+									)}
+								>
+									URL
+								</button>
+							</div>
+
+							<Input
+								id="image"
+								ref={fileInputRef}
+								type="file"
+								accept="image/*"
+								disabled={imageMode !== "upload"}
+							/>
+							<p className="text-xs text-muted-foreground">
+								{imageMode === "upload"
+									? "Last opp et bilde (JPG/PNG/WebP)."
+									: "Opplasting er deaktivert når du bruker URL."}
+							</p>
+						</div>
+
+						<div className="space-y-2">
 							<Label htmlFor="image_url">Bilde-URL (valgfritt)</Label>
 							<Input
 								id="image_url"
 								placeholder="https://..."
 								inputMode="url"
 								{...register("image_url")}
+								disabled={imageMode !== "url"}
 							/>
 							{errors.image_url?.message ? (
 								<p className="text-xs text-destructive">
 									{errors.image_url.message}
 								</p>
 							) : null}
+							<p className="text-xs text-muted-foreground">
+								{imageMode === "url"
+									? "Lim inn en URL til et bilde."
+									: "URL er deaktivert når du bruker opplasting."}
+							</p>
 						</div>
 
 						<div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
