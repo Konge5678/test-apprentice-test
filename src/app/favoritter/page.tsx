@@ -1,9 +1,24 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/nav/header";
+import { createClient } from "@/lib/supabase/server";
 import { EventsList } from "@/components/events/events-list";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+
+type FavoriteEvent = {
+	id: string;
+	title: string;
+	description: string | null;
+	date: string;
+	location: string | null;
+	category: string | null;
+	image_url: string | null;
+};
+
+type FavoriteRow = {
+	event_id: string;
+	events: FavoriteEvent | null;
+};
 
 export default async function FavoritesPage() {
 	const supabase = await createClient();
@@ -29,10 +44,12 @@ export default async function FavoritesPage() {
     `)
 		.eq("user_id", user.id);
 
-	const events = (favorites ?? [])
+	const rows = (favorites ?? []) as unknown as FavoriteRow[];
+
+	const events = rows
 		.map((f) => f.events)
-		.filter(Boolean)
-		.map((event: any) => ({
+		.filter((e): e is FavoriteEvent => Boolean(e))
+		.map((event) => ({
 			...event,
 			isFavorited: true,
 		}));
