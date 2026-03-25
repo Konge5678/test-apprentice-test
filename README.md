@@ -55,7 +55,7 @@ A full-stack web application designed to connect local communities through event
   - View all events
   - Edit or remove events when needed
 
-### Authentication & authorization (overview)
+### Authentication & authorization
 
 - Email/password authentication with Supabase Auth
 - Role-based access control (user, organizer, admin)
