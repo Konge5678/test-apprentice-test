@@ -169,18 +169,15 @@ Open `http://localhost:3000`.
 - `pnpm build` - Build for production
 - `pnpm start` - Start the production server
 
-## 🔑 Environment variables
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ## 🔐 Authentication & authorization
 
 - Authentication uses Supabase email/password.
 - Application roles are stored in `public.profiles.role`.
 - Protected routes are enforced in two layers:
-  1. **Route protection in Next.js layouts** (server-side): `/arrangor/*` and `/admin/*`
-  2. **Database protection with RLS**: policies restrict inserts/updates/deletes by `auth.uid()` and role
+  -  **Route protection in Next.js layouts** (server-side): `/arrangor/*` and `/admin/*`
+  -  **Database protection with RLS**: policies restrict inserts/updates/deletes by `auth.uid()` and role
 
 Roles:
 
@@ -239,16 +236,26 @@ Upload flow:
 
 ## 🚀 Deployment
 
-- Hosted on Vercel
-- Environment variables set in Vercel project settings
-- Supabase handles database/auth/storage
+The application can be deployed to various platforms:
+
+1. **Build the Application**
+
+   ```bash
+   pnpm build
+   ```
+
+2. **Deploy Options**
+   - Vercel
+   - Netlify
+   - Self-hosted server
+   - Docker container
 
 ## 🙏 Acknowledgments
 
 - Supabase for authentication, database, and storage
 - shadcn/ui for accessible UI components
 - Nicklas Båkind-Øverjordet for asking questions that helped me reflect on my technical choices
-- Martin Myhre (sensor) for asking clarifying questions and challenging my decisions in a constructive way
+- Martin Myhre for asking clarifying questions and challenging my decisions in a constructive way
 
 ## 📝 License
 
