@@ -4,33 +4,33 @@ import { Header } from "@/components/nav/header";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ArrangorLayout({
-	children,
+  children,
 }: {
-	children: ReactNode;
+  children: ReactNode;
 }) {
-	const supabase = await createClient();
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-	if (!user) {
-		redirect("/login");
-	}
+  if (!user) {
+    redirect("/login");
+  }
 
-	const { data: profile } = await supabase
-		.from("profiles")
-		.select("role")
-		.eq("id", user.id)
-		.maybeSingle();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
 
-	if (!profile || (profile.role !== "organizer" && profile.role !== "admin")) {
-		redirect("/");
-	}
+  if (!profile || (profile.role !== "organizer" && profile.role !== "admin")) {
+    redirect("/");
+  }
 
-	return (
-		<>
-			<Header />
-			<main className="mx-auto w-full max-w-6xl p-4 md:p-6">{children}</main>
-		</>
-	);
+  return (
+    <>
+      <Header />
+      <main className="mx-auto w-full max-w-6xl p-4 md:p-6">{children}</main>
+    </>
+  );
 }

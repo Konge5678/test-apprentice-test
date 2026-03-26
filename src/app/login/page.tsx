@@ -32,7 +32,9 @@ export default function LoginPage() {
               <Input id="password" name="password" type="password" required />
             </div>
 
-            {state.error ? <p className="text-sm text-red-600">{state.error}</p> : null}
+            {state.error ? (
+              <p className="text-sm text-red-600">{state.error}</p>
+            ) : null}
 
             <Button type="submit" className="w-full" disabled={pending}>
               {pending ? "Logger inn..." : "Logg inn"}

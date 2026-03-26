@@ -29,10 +29,18 @@ export default function SignupPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Passord</Label>
-              <Input id="password" name="password" type="password" minLength={6} required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                minLength={6}
+                required
+              />
             </div>
 
-            {state.error ? <p className="text-sm text-red-600">{state.error}</p> : null}
+            {state.error ? (
+              <p className="text-sm text-red-600">{state.error}</p>
+            ) : null}
 
             <Button type="submit" className="w-full" disabled={pending}>
               {pending ? "Oppretter konto..." : "Opprett konto"}

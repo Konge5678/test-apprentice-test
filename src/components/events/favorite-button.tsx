@@ -21,7 +21,11 @@ type FavoriteButtonProps = {
   isLoggedIn: boolean;
 };
 
-export function FavoriteButton({ eventId, isFavorited, isLoggedIn }: FavoriteButtonProps) {
+export function FavoriteButton({
+  eventId,
+  isFavorited,
+  isLoggedIn,
+}: FavoriteButtonProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -62,13 +66,18 @@ export function FavoriteButton({ eventId, isFavorited, isLoggedIn }: FavoriteBut
         type="button"
         variant="ghost"
         size="icon-sm"
-        aria-label={optimisticFavorited ? "Fjern fra favoritter" : "Legg til i favoritter"}
+        aria-label={
+          optimisticFavorited ? "Fjern fra favoritter" : "Legg til i favoritter"
+        }
         onClick={onClickFavorite}
-        className={pending ? "pointer-events-none opacity-100" : "opacity-100"}
-      >
+        className={pending ? "pointer-events-none opacity-100" : "opacity-100"}>
         <Heart
-  className={optimisticFavorited ? "fill-current text-red-600" : "text-muted-foreground"}
-/>
+          className={
+            optimisticFavorited
+              ? "fill-current text-red-600"
+              : "text-muted-foreground"
+          }
+        />
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -81,7 +90,9 @@ export function FavoriteButton({ eventId, isFavorited, isLoggedIn }: FavoriteBut
           </DialogHeader>
           <DialogFooter>
             <Button asChild>
-              <Link href={`/login?next=${encodeURIComponent(pathname)}`}>Logg inn</Link>
+              <Link href={`/login?next=${encodeURIComponent(pathname)}`}>
+                Logg inn
+              </Link>
             </Button>
           </DialogFooter>
         </DialogContent>

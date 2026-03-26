@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { FavoriteButton } from "@/components/events/favorite-button";
 import { formatEventDate } from "@/lib/date";
 
@@ -37,7 +43,9 @@ export function EventCard({
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-lg leading-6">{event.title}</CardTitle>
           <div className="flex items-center gap-1">
-            {event.category ? <Badge variant="outline">{event.category}</Badge> : null}
+            {event.category ? (
+              <Badge variant="outline">{event.category}</Badge>
+            ) : null}
             <FavoriteButton
               eventId={event.id}
               isFavorited={event.isFavorited}
@@ -50,7 +58,9 @@ export function EventCard({
 
       <CardContent className="flex h-full flex-col justify-between gap-4">
         <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">{event.location || "Sted ikke oppgitt"}</p>
+          <p className="text-sm text-muted-foreground">
+            {event.location || "Sted ikke oppgitt"}
+          </p>
           <p className="line-clamp-2 text-sm text-muted-foreground">
             {event.description || "Ingen beskrivelse tilgjengelig."}
           </p>

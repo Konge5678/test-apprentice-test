@@ -58,7 +58,9 @@ export default async function AdminUsersPage() {
     <main>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between border-b pb-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Brukere og roller</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Brukere og roller
+          </h1>
           <p className="text-sm text-muted-foreground">
             Oppdater rolle for brukere i systemet
           </p>
@@ -77,7 +79,9 @@ export default async function AdminUsersPage() {
       <Card className="ring-0">
         <CardHeader>
           <CardTitle>Oversikt</CardTitle>
-          <CardDescription>{profiles?.length ?? 0} bruker(e) funnet</CardDescription>
+          <CardDescription>
+            {profiles?.length ?? 0} bruker(e) funnet
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -102,10 +106,16 @@ export default async function AdminUsersPage() {
 
               <tbody>
                 {profiles?.map((p) => (
-                  <tr key={p.id} className="border-b border-border/70 last:border-0">
+                  <tr
+                    key={p.id}
+                    className="border-b border-border/70 last:border-0">
                     <td className="px-4 py-3 align-top">
-                      <div className="font-medium">{p.full_name || "Uten navn"}</div>
-                      <div className="text-xs text-muted-foreground" title={p.id}>
+                      <div className="font-medium">
+                        {p.full_name || "Uten navn"}
+                      </div>
+                      <div
+                        className="text-xs text-muted-foreground"
+                        title={p.id}>
                         {maskId(p.id)}
                       </div>
                     </td>
@@ -117,15 +127,13 @@ export default async function AdminUsersPage() {
                     <td className="px-4 py-3 align-top">
                       <form
                         action={updateUserRole}
-                        className="flex flex-col gap-2 sm:flex-row sm:items-center"
-                      >
+                        className="flex flex-col gap-2 sm:flex-row sm:items-center">
                         <input type="hidden" name="userId" value={p.id} />
                         <select
                           name="role"
                           defaultValue={p.role}
                           aria-label={`Velg ny rolle for ${p.full_name || "bruker"}`}
-                          className="h-9 min-w-40 rounded-md border border-input bg-background px-3 text-sm"
-                        >
+                          className="h-9 min-w-40 rounded-md border border-input bg-background px-3 text-sm">
                           {roleOptions.map((r) => (
                             <option key={r.value} value={r.value}>
                               {r.label}

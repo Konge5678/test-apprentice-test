@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-	title: "Innlandet Arrangementer",
-	description: "Arrangementer i Innlandet",
+  title: "Innlandet Arrangementer",
+  description: "Arrangementer i Innlandet",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="no" className="h-full antialiased">
-			<body className="min-h-full flex flex-col">{children}</body>
-		</html>
-	);
+  return (
+    <html lang="no" className="h-full antialiased">
+      <body className="min-h-full flex flex-col">{children}</body>
+    </html>
+  );
 }
