@@ -5,6 +5,7 @@ A full-stack web application designed to connect local communities through event
 ## 📌 Table of contents
 
 <!-- markdownlint-disable MD051 -->
+- [Documentation](#-documentation)
 - [Features](#-features)
 - [Tech stack](#tech-stack)
 - [Project structure](#project-structure)
@@ -19,6 +20,12 @@ A full-stack web application designed to connect local communities through event
 - [License](#license)
 - [Authors](#authors)
 <!-- markdownlint-enable MD051 -->
+
+## 📄 Documentation
+
+The completed test documentation (fagprøve) is available here:
+
+[Prøve Fagprøve Dokumentasjon.pdf](./Prøve%20Fagprøve%20Dokumentasjon.pdf)
 
 ## 🚀 Features
 
